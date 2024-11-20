@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스터디 그룹 만들기</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>스터디 그룹 만들기</h1>
+    <form id="createGroupForm">
+        <input type="text" placeholder="스터디 그룹 이름" required><br>
+        <input type="text" placeholder="과목" required><br>
+        <input type="number" placeholder="인원수" required><br>
+        <input type="text" placeholder="기간" required><br>
+        <button type="submit">완료</button>
+    </form>
+
+    <script>
+        document.getElementById('createGroupForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            // 스터디 그룹 생성 로직 추가 필요
+            window.location.href = 'group_list.html'; // 그룹 목록 페이지로 이동
+        });
+    </script>
+</body>
+</html>

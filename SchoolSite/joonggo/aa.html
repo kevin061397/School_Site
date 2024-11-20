@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>중고 마켓</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .product {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>중고 마켓</h1>
+    </header>
+
+    <main>
+        <section id="home">
+            <h2>최근 등록 상품</h2>
+            <div id="product-list">
+                <p>등록된 상품이 없습니다.</p>
+            </div>
+        </section>
+
+        <section id="sell">
+            <h2>상품 판매하기</h2>
+            <form id="sell-form">
+                <label for="product-name">상품 이름:</label>
+                <input type="text" id="product-name" required>
+                
+                <label for="product-price">가격:</label>
+                <input type="number" id="product-price" required>
+                
+                <label for="product-condition">상태:</label>
+                <select id="product-condition" required>
+                    <option value="new">새것</option>
+                    <option value="good">좋은 상태</option>
+                    <option value="used">중고</option>
+                </select>
+                
+                <label for="product-image">상품 이미지 (선택):</label>
+                <input type="file" id="product-image" accept="image/*">
+                
+                <label for="contact-info">연락처:</label>
+                <input type="text" id="contact-info" required placeholder="전화번호 또는 이메일">
+                
+                <button type="submit">등록하기</button>
+            </form>
+        </section>
+
+        <section id="contact">
+            <h2>연락하기</h2>
+            <p>문의 사항이 있으시면 아래의 이메일로 연락해 주세요: example@example.com</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 중고 마켓</p>
+    </footer>
+
+    <script>
+        const productList = document.getElementById('product-list');
+        const sellForm = document.getElementById('sell-form');
+        const loadProducts = () => {
+            const products = JSON.parse(localStorage.getItem('products')) || [];
+            if (products.length === 0) {
+                productList.innerHTML = '<p>등록된 상품이 없습니다.</p>';
+            } else {
+                products.forEach(product => {
+                    addProductToList(product);
+                });
+            }
+        };
+        const addProductToList = (product) => {
+            const productDiv = document.createElement('div');
+            productDiv.classList.add('product');
+            productDiv.innerHTML = `
+                <h3>${product.name}</h3>
+                <p>가격: ${product.price}원</p>
+                <p>상태: ${product.condition}</p>
+                <p>연락처: ${product.contact}</p>
+                ${product.image ? `<img src="${product.image}" alt="${product.name}" style="max-width: 100px;">` : ''}
+            `;
+            productList.appendChild(productDiv);
+        };
+        sellForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const productName = document.getElementById('product-name').value;
+            const productPrice = document.getElementById('product-price').value;
+            const productCondition = document.getElementById('product-condition').value;
+            const contactInfo = document.getElementById('contact-info').value;
+            const productImage = document.getElementById('product-image').files[0];
+
+            let imageUrl = '';
+            if (productImage) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imageUrl = e.target.result;
+                    saveProduct({ name: productName, price: productPrice, condition: productCondition, contact: contactInfo, image: imageUrl });
+                };
+                reader.readAsDataURL(productImage);
+            } else {
+                saveProduct({ name: productName, price: productPrice, condition: productCondition, contact: contactInfo, image: '' });
+            }
+            this.reset();
+        });
+        const saveProduct = (product) => {
+            const products = JSON.parse(localStorage.getItem('products')) || [];
+            products.push(product);
+            localStorage.setItem('products', JSON.stringify(products));
+            productList.innerHTML = ''; 
+            loadProducts(); 
+        };
+
+        loadProducts();
+    </script>
+</body>
+</html>
